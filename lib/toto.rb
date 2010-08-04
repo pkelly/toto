@@ -99,6 +99,9 @@ module Toto
 
     def go route, env, type = :html
       route << self./ if route.empty?
+      if route.first == @config[:prefix]
+        (route.size == 1) ? route[0] = 'index' : route.delete_at(0)
+      end
       type, path = type =~ /html|xml|json/ ? type.to_sym : :html, route.join('/')
       context = lambda do |data, page|
         Context.new(data, @config, path, env).render(page, type)

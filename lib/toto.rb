@@ -273,6 +273,14 @@ module Toto
     def body
       markdown self[:body].sub(@config[:summary][:delim], '') rescue markdown self[:body]
     end
+    
+    def feed_body
+      abosolutize_urls self.body
+    end
+    
+    def feed_summary
+      abosolutize_urls self.summary
+    end
 
     def path
       "/#{@config[:prefix]}#{self[:date].strftime("/%Y/%m/%d/#{slug}/")}".squeeze('/')
@@ -283,6 +291,13 @@ module Toto
     def author()  self[:author] || @config[:author]          end
     def to_html() self.load; super(:article, @config)        end
     alias :to_s to_html
+    
+    private
+      
+      def abosolutize_urls(html)
+        html.gsub('/images', "#{@config[:url]}images")
+      end
+      
   end
 
   class Config < Hash
